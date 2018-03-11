@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>com.xun</groupId>
-    <artifactId>common_parent</artifactId>
+    <artifactId>bos_management</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>bos_management_dao</artifactId>
+  <artifactId>bos_management_web</artifactId>
+  <packaging>war</packaging>
 </project>

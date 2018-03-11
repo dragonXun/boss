@@ -9,5 +9,11 @@
   <artifactId>bos_management</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <description>后台系统</description>
+  <description>后台管理系统</description>
+  <modules>
+  	<module>bos_management_domain</module>
+  	<module>bos_management_dao</module>
+  	<module>bos_management_service</module>
+  	<module>bos_management_web</module>
+  </modules>
 </project>
