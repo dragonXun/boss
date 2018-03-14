@@ -12,10 +12,6 @@ import com.xun.bos.domain.base.Standard;
  * Function:  <br/>  
  * Date:     2018年3月12日 下午3:44:21 <br/>       
  */
-public interface StandardDao extends JpaRepository<Standard, Long> {
-    @Query("from Standard where name=?")
-    List<Standard> fin(String name);
-    @Query(value="select * from T_STANDARD where c_name like ?", nativeQuery=true)
-    List<Standard> findby(String name);
+public interface StandardRepository extends JpaRepository<Standard, Long> {
 }
   
