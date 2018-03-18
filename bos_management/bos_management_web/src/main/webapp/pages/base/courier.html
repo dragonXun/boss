@@ -19,11 +19,45 @@
 			function doAdd(){
 				$('#addWindow').window("open");
 			}
-			
+			// 将form表单中input节点的数据转为json
+			$.fn.serializeJson = function() {
+				var serializeObj = {};
+				var array = this.serializeArray();
+				var str = this.serialize();
+				$(array).each(
+						function() {
+							if (serializeObj[this.name]) {
+								if ($.isArray(serializeObj[this.name])) {
+									serializeObj[this.name].push(this.value);
+								} else {
+									serializeObj[this.name] = [
+											serializeObj[this.name], this.value ];
+								}
+							} else {
+								serializeObj[this.name] = this.value;
+							}
+						});
+				return serializeObj;
+			};
+
+			// 发起查询请求
+			function doSearch() {
+				// 把form表单中input节点的name的值和用户输入的内容,拼接成json字符串
+				var result = $("#searchForm").serializeJson()
+				//让datagrid重新发起请求
+				$('#grid').datagrid('load', result);
+				$("#searchWindow").window('close')
+			}
+			function openSearchWindow(){
+				$('#searchWindow').window("open");
+			}
 			function doEdit(){
 				var result = $('#grid').datagrid("getSelections")
 				if (result.length == 1) {
 					$('#addWindow').window('open')
+					$('#addWindow').form("load",{
+						'standard.id':result[0].standard.id
+					})
 					$('#addWindow').form("load",result[0])
 				} else {
 					$.messager.alert('提示', '请选择一条数据进行修改~!~', 'info')
@@ -71,6 +105,11 @@
 				text : '还原',
 				iconCls : 'icon-save',
 				handler : doRestore
+			},{
+				id : 'button-search',
+				text : '查找',
+				iconCls : 'icon-search',
+				handler : openSearchWindow
 			}];
 			// 定义列
 			var columns = [ [ {
@@ -215,6 +254,7 @@
 						<tr>
 							<td>快递员工号</td>
 							<td>
+								<input type="hidden" name="id" class="easyui-validatebox" required="true" />
 								<input type="text" name="courierNum" class="easyui-validatebox" required="true" />
 							</td>
 							<td>姓名</td>
@@ -273,7 +313,7 @@
 		<!-- 查询快递员-->
 		<div class="easyui-window" title="查询快递员窗口" closed="true" id="searchWindow" collapsible="false" minimizable="false" maximizable="false" style="width: 400px; top:40px;left:200px">
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form id="searchForm">
+				<form id="searchForm" >
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">查询条件</td>
@@ -303,7 +343,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td colspan="2"><a id="searchBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
+							<td colspan="2"><a id="searchBtn" href="javascript:doSearch()" class="easyui-linkbutton" data-options="iconCls:'icon-search'">查询</a> </td>
 						</tr>
 					</table>
 				</form>

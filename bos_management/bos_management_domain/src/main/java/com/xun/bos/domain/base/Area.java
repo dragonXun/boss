@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 public class Area {
 
     @Id
+    @GeneratedValue
     @Column(name = "C_ID")
     private Long id;
     @Column(name = "C_PROVINCE")
@@ -33,8 +35,12 @@ public class Area {
     private String shortcode; // 简码
 
     @OneToMany(mappedBy = "area")
-    private Set<SubArea> subareas = new HashSet<SubArea>();
+    private transient Set<SubArea> subareas = new HashSet<SubArea>();
 
+    public String getName(){
+        return province+city+district;
+    }
+    
     public Long getId() {
         return id;
     }

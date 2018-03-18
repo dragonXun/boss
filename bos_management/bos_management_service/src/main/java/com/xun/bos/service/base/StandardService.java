@@ -1,4 +1,4 @@
-package com.xun.bos.service;
+package com.xun.bos.service.base;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -21,7 +21,16 @@
 			}
 			
 			function doEdit(){
-				alert("修改...");
+				var result = $('#grid').datagrid("getSelections")
+				if (result.length == 1) {
+					$('#addWindow').window("open");
+					$('#addWindow').form("load",result[0])
+					$('#addWindow').form("load",{
+						'area.id':result[0].area.id
+					})
+				}else {
+					$.messager.alert("提示", "只能选择一条数据修改!", "info")
+				}
 			}
 			
 			function doDelete(){
@@ -119,17 +128,17 @@
 					return "" ;
 				}
 			}, {
-				field : 'addresskey',
+				field : 'keyWords',
 				title : '关键字',
 				width : 120,
 				align : 'center'
 			}, {
-				field : 'startnum',
+				field : 'startNum',
 				title : '起始号',
 				width : 100,
 				align : 'center'
 			}, {
-				field : 'endnum',
+				field : 'endNum',
 				title : '终止号',
 				width : 100,
 				align : 'center'
@@ -156,10 +165,10 @@
 					border : true,
 					rownumbers : true,
 					striped : true,
-					pageList: [30,50,100],
+					pageList: [10,20,30,50,100],
 					pagination : true,
 					toolbar : toolbar,
-					url : "../../data/sub_area.json",
+					url : "../../subAreaAction_pageQuery.action",
 					idField : 'id',
 					columns : columns,
 					onDblClickRow : doDblClickRow
@@ -204,6 +213,13 @@
 				alert("双击表格数据...");
 			}
 		</script>
+		<script type="text/javascript">
+			function submitData() {
+				if ($("#subareaForm").form("validate")) {
+					$("#subareaForm").submit()
+				}
+			}
+		</script>
 	</head>
 
 	<body class="easyui-layout" style="visibility:hidden;">
@@ -214,12 +230,12 @@
 		<div class="easyui-window" title="分区添加修改" id="addWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 			<div style="height:31px;overflow:hidden;" split="false" border="false">
 				<div class="datagrid-toolbar">
-					<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
+					<a id="save" icon="icon-save" href="javascript:submitData()" class="easyui-linkbutton" plain="true">保存</a>
 				</div>
 			</div>
 
 			<div style="overflow:auto;padding:5px;" border="false">
-				<form id="subareaForm" method="post" action="../../subareaAction_save.action">
+				<form id="subareaForm" method="post" action="../../subAreaAction_save.action">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
 							<td colspan="2">分区信息</td>
@@ -228,13 +244,14 @@
 							<td>选择区域</td>
 							<td>
 								<input class="easyui-combobox" name="area.id"
-									 data-options="valueField:'id',textField:'name',
-									 url:''" />
+									 data-options="valueField:'id',textField:'name',mode:'remote',
+									 url:'../../areaAction_findAll.action'" />
 							</td>
 						</tr>
 						<tr>
 							<td>关键字</td>
 							<td>
+								<input type="hidden" name="id" class="easyui-validatebox" required="true" />
 								<input type="text" name="keyWords" class="easyui-validatebox" required="true" />
 							</td>
 						</tr>

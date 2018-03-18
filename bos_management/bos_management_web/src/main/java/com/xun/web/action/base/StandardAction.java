@@ -22,7 +22,8 @@ import org.springframework.stereotype.Controller;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.xun.bos.domain.base.Standard;
-import com.xun.bos.service.StandardService;
+import com.xun.bos.service.base.StandardService;
+import com.xun.web.action.CommonAction;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -36,21 +37,19 @@ import net.sf.json.JSONObject;
 @Namespace("/")
 @ParentPackage("struts-default")
 @Scope("prototype")
-public class StandardAction extends ActionSupport implements ModelDriven<Standard> {
+public class StandardAction extends CommonAction<Standard> {
+    public StandardAction() {
+        super(Standard.class);  
+    }
+
     @Autowired
     private StandardService standardService;
-    private Standard model = new Standard();
-    @Override
-    public Standard getModel() {
-          
-        return model;
-    }
 
     @Action(value="standardAction_save",results={
             @Result(name="success",location="/pages/base/standard.html",type="redirect")
     })
     public String save(){
-        standardService.save(model);
+        standardService.save(getModel());
         return SUCCESS;
     }
     @Action("standard_findAll")

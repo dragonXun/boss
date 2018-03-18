@@ -2,10 +2,15 @@ package com.xun.bos.domain.base;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
 
 /**
  * @description:分区
@@ -15,6 +20,7 @@ import javax.persistence.Table;
 public class SubArea {
 
     @Id
+    @GeneratedValue
     @Column(name = "C_ID")
     private Long id;
     @Column(name = "C_START_NUM")
@@ -33,7 +39,7 @@ public class SubArea {
     private Area area; // 区域
     @ManyToOne
     @JoinColumn(name = "C_FIXEDAREA_ID")
-    private FixedArea fixedArea; // 定区
+    private  FixedArea fixedArea; // 定区
 
     public Long getId() {
         return id;

@@ -1,7 +1,9 @@
-package com.xun.bos.service;
+package com.xun.bos.service.base;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import com.xun.bos.domain.base.Courier;
 
@@ -14,9 +16,10 @@ public interface CourierService {
 
     void save(Courier model);
 
-    Page<Courier> findAll(Pageable pageable);
-
     void updateDelById(String[] arr);
+
+    Page<Courier> findAll(Specification<Courier> specification, Pageable pageable);
+
 
 }
   

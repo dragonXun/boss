@@ -1,4 +1,4 @@
-package com.xun.bos.service.impl;
+package com.xun.bos.service.base.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.xun.bos.dao.StandardRepository;
 import com.xun.bos.domain.base.Standard;
-import com.xun.bos.service.StandardService;
+import com.xun.bos.service.base.StandardService;
 
 /**  
  * ClassName:StandardServiceImpl <br/>  
