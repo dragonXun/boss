@@ -72,7 +72,7 @@ public class CommonAction<T> extends ActionSupport implements ModelDriven<T> {
         response.getWriter().write(json);
     }
     
-    public void listToJson(List<T> list,JsonConfig jsonConfig) throws IOException{
+    public void listToJson(List list,JsonConfig jsonConfig) throws IOException{
         String json;
         if (jsonConfig == null) {
             json = JSONArray.fromObject(list).toString();

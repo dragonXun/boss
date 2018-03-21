@@ -63,5 +63,21 @@ public class SubAreaAction extends CommonAction<SubArea> {
         pageToJson(page, jsonConfig);
         return NONE;
     }
+    
+    @Action("subAreaAction_findUnAssociatedFixedArea")
+    public String findUnAssociatedFixedArea() throws IOException{
+        List<SubArea> list = subAreaService.findUnAssociatedFixedArea();
+        listToJson(list, null);
+        return NONE;
+    }
+
+    @Action("subAreaAction_findAssociatedFixedArea")
+    public String findAssociatedFixedArea() throws IOException{
+        List<SubArea> list = subAreaService.findAssociatedFixedArea(getModel().getId());
+        JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setExcludes(new String[]{"fixedArea","area"});
+        listToJson(list, jsonConfig);
+        return NONE;
+    }
 }
   

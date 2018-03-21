@@ -167,7 +167,7 @@
 				width : 80,
 				align : 'center',
 				formatter : function(data,row, index){
-					if(data=="1"){
+					if(data!="1"){
 						return "正常使用"
 					}else{
 						return "已作废";
@@ -249,12 +249,12 @@
 							<td colspan="4">收派员信息</td>
 						</tr>
 						<tr >
-							<td colspan="4"><input type="hidden" name="deltag" value="1"></input></td>
+							<td colspan="4"><input type="hidden" name="deltag" ></input></td>
 						</tr>
 						<tr>
 							<td>快递员工号</td>
 							<td>
-								<input type="hidden" name="id" class="easyui-validatebox" required="true" />
+								<input type="hidden" name="id"  />
 								<input type="text" name="courierNum" class="easyui-validatebox" required="true" />
 							</td>
 							<td>姓名</td>

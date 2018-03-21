@@ -1,5 +1,7 @@
 package com.xun.bos.service.base;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,6 +20,10 @@ public interface SubAreaService {
     Page<SubArea> findAll(Pageable pageable);
 
     Page<SubArea> findAll(Specification<SubArea> specification, Pageable pageable);
+
+    List<SubArea> findUnAssociatedFixedArea();
+
+    List<SubArea> findAssociatedFixedArea(Long id);
 
 }
   

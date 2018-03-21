@@ -1,4 +1,4 @@
-package cn.xun.bos.utils;
+package com.xun.utils;
 
 import java.util.Arrays;
 

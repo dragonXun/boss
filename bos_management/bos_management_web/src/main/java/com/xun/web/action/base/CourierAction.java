@@ -33,6 +33,7 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.xun.bos.domain.base.Courier;
 import com.xun.bos.domain.base.Standard;
 import com.xun.bos.service.base.CourierService;
+import com.xun.web.action.CommonAction;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -47,22 +48,22 @@ import net.sf.json.JsonConfig;
 @Namespace("/")
 @ParentPackage("struts-default")
 @Scope("prototype")
-public class CourierAction extends ActionSupport implements ModelDriven<Courier> {
-    private Courier model;
+public class CourierAction extends CommonAction<Courier> {
+   
+    public CourierAction() {
+          
+        super(Courier.class);  
+        
+    }
+
     @Autowired
     private CourierService courierService;
-    @Override
-    public Courier getModel() {
-        if (model == null) {
-            model = new Courier();
-        }
-        return model;
-    }
+
     @Action(value="courierAction_save",results={
             @Result(name="success",location="/pages/base/courier.html",type="redirect")
     })
     public String save(){
-        courierService.save(model);
+        courierService.save(getModel());
         return SUCCESS;
     }
     
@@ -82,14 +83,7 @@ public class CourierAction extends ActionSupport implements ModelDriven<Courier>
         return NONE;
     }
     
-    private int page;
-    private int rows;
-    public void setPage(int page) {
-        this.page = page;
-    }
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
+   
     @Action("courierAction_pageQuery")
     public String pageQuery() throws IOException{
         Specification<Courier> specification = new Specification<Courier>() {
@@ -97,10 +91,10 @@ public class CourierAction extends ActionSupport implements ModelDriven<Courier>
             @Override
             public Predicate toPredicate(Root<Courier> root, CriteriaQuery<?> query,
                     CriteriaBuilder cb) {
-                String courierNum = model.getCourierNum();
-                Standard standard = model.getStandard();
-                String company = model.getCompany();
-                String type = model.getType();
+                String courierNum = getModel().getCourierNum();
+                Standard standard = getModel().getStandard();
+                String company = getModel().getCompany();
+                String type = getModel().getType();
                 List<Predicate> list = new ArrayList<>();
                 if (StringUtils.isNotEmpty(courierNum)) {
                     Predicate p1 = cb.equal(root.get("courierNum").as(String.class), courierNum);
@@ -128,20 +122,29 @@ public class CourierAction extends ActionSupport implements ModelDriven<Courier>
             }};
         Pageable pageable = new PageRequest(page-1, rows);
         Page<Courier> page = courierService.findAll(specification,pageable);
-        long total = page.getTotalElements();
-        List<Courier> list = page.getContent();
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", total);
-        map.put("rows", list);
-        
         JsonConfig jsonConfig = new JsonConfig();
         jsonConfig.setExcludes(new String[]{"fixedAreas"});
-        String json = JSONObject.fromObject(map,jsonConfig).toString();
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(json);        
+        pageToJson(page, jsonConfig);        
         return NONE;
     }
 
+    @Action("courierAction_findAll")
+    public String findAll() throws IOException{
+        Specification<Courier> specification = new Specification<Courier>() {
+
+            @Override
+            public Predicate toPredicate(Root<Courier> root, CriteriaQuery<?> query,
+                    CriteriaBuilder cb) {
+                Predicate predicate = cb.isNull(root.get("deltag").as(Character.class));
+                return predicate;
+            }};
+        Page<Courier> page = courierService.findAll(specification, null);
+        List<Courier> list = page.getContent();
+        JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setExcludes(new String[]{"fixedAreas","takeTime","standard"});
+        listToJson(list, jsonConfig);
+        
+        return NONE;
+    }
 }
   

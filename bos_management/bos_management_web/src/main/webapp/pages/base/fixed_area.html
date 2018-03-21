@@ -20,7 +20,13 @@
 			}
 			
 			function doEdit(){
-				alert("修改...");
+				var result = $('#grid').datagrid('getSelections');
+				if (result.length == 1) {
+					$('#addWindow').window("open");
+					$('#addWindow').form("load",result[0]);
+				}else{
+					$.messager.alert("提示", "你一次只能选择一条数据进行修改!", 'info')
+				}
 			}
 			
 			function doDelete(){
@@ -31,8 +37,61 @@
 				$('#searchWindow').window("open");
 			}
 			
-			function doAssociations(){
-				$('#customerWindow').window('open');
+			function doSubAreaAssociations(){
+				var rows = $("#grid").datagrid("getSelections")
+				if (rows.length == 1) {
+					$("#noassociationSelect").empty()
+					$("#associationSelect").empty()
+					$('#areaId').text("关联分区")
+					$('#associationBtn').text("关联分区")
+					$('#customerWindow').window('open')
+					$.post("../../subAreaAction_findUnAssociatedFixedArea.action",function(data){
+						for (var i = 0; i < data.length; i++) {
+							var id = data[i].id
+							var keyWords = data[i].keyWords
+							$("#noassociationSelect").append("<option value='"+id+"'>"+keyWords+"</option>")
+						}
+					})
+					$.post("../../subAreaAction_findAssociatedFixedArea.action","id="+rows[0].id,function(data){
+						for (var i = 0; i < data.length; i++) {
+							var id = data[i].id
+							var keyWords = data[i].keyWords
+							$("#associationSelect").append("<option value='"+id+"'>"+keyWords+"</option>")
+						}
+					})
+					$("#subAreaId").append("<input type='hidden' name='company' value='hello' />")
+				}else{
+					$.messager.alert("提示","只能选择一条数据进行关联!","info")
+				}
+			}
+			
+			function doCustomerAssociations() {
+				var rows = $("#grid").datagrid("getSelections")
+				if (rows.length == 1) {
+					$("#noassociationSelect").empty()
+					$("#associationSelect").empty()
+					$('#areaId').text("关联客户")
+					$('#associationBtn').text("关联客户")
+					$('#customerWindow').window('open')
+					$.post("../../fixedAreaAction_findUnAssociatedCustomers.action",function(data){
+						for (var i = 0; i < data.length; i++) {
+							var id = data[i].id
+							var username = data[i].username
+							var telephone = data[i].telephone
+							$("#noassociationSelect").append("<option value='"+id+"'>"+username+"["+telephone+"]</option>")
+						}
+					})
+					$.post("../../fixedAreaAction_findAssociatedCustomers.action","id="+rows[0].id,function(data){
+						for (var i = 0; i < data.length; i++) {
+							var id = data[i].id
+							var username = data[i].username
+							var telephone = data[i].telephone
+							$("#associationSelect").append("<option value='"+id+"'>"+username+"["+telephone+"]</option>")
+						}
+					})
+				}else{
+					$.messager.alert("提示","只能选择一条数据进行关联!","info")
+				}
 			}
 			
 			//工具栏
@@ -60,7 +119,7 @@
 				id : 'button-association',
 				text : '关联客户',
 				iconCls : 'icon-sum',
-				handler : doAssociations
+				handler : doCustomerAssociations
 			},{
 				id : 'button-association-courier',
 				text : '关联快递员',
@@ -81,7 +140,7 @@
 				id : 'button-association2',
 				text : '关联分区',
 				iconCls : 'icon-sum',
-				handler : doAssociations
+				handler : doSubAreaAssociations
 			}];
 			// 定义列
 			var columns = [ [ {
@@ -258,6 +317,16 @@
 				
 			}
 		</script>
+		<script type="text/javascript">
+			function submitData() {
+				if($("#fixedAreaForm").form("validate")){
+					$("#fixedAreaForm").submit()
+				}
+			}
+			
+			
+		</script>
+	
 	</head>
 
 	<body class="easyui-layout" style="visibility:hidden;">
@@ -279,7 +348,7 @@
 		<div class="easyui-window" title="定区添加修改" id="addWindow" collapsible="false" minimizable="false" maximizable="false" style="top:20px;left:200px">
 			<div style="height:31px;overflow:hidden;" split="false" border="false">
 				<div class="datagrid-toolbar">
-					<a id="save" icon="icon-save" href="#" class="easyui-linkbutton" plain="true">保存</a>
+					<a id="save" icon="icon-save" href="javascript:submitData()" class="easyui-linkbutton" plain="true">保存</a>
 					</script>
 				</div>
 			</div>
@@ -354,34 +423,50 @@
 		</div>
 
 		<!-- 关联客户窗口 -->
-		<div modal="true" class="easyui-window" title="关联客户窗口" id="customerWindow" collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 400px;height: 300px;">
+		<div modal="true" class="easyui-window" title="关联窗口" id="customerWindow" collapsible="false" closed="true" minimizable="false" maximizable="false" style="top:20px;left:200px;width: 400px;height: 300px;">
 			<div style="overflow:auto;padding:5px;" border="false">
 				<form id="customerForm" action="../../fixedAreaAction_assignCustomers2FixedArea.action" method="post">
 					<table class="table-edit" width="80%" align="center">
 						<tr class="title">
-							<td colspan="3">关联客户</td>
+							<td colspan="3" id="areaId">关联客户</td>
 						</tr>
 						<tr>
-							<td>
+							<td id="subAreaId">
 								<input type="hidden" name="id" id="customerFixedAreaId" />
 								<select id="noassociationSelect" multiple="multiple" size="10"></select>
 							</td>
 							<td>
-								<input type="button" value="》》" id="toRight">
+								<input type="button" value="》》" id="toRight" onclick="intoRight()" >
 								<br/>
-								<input type="button" value="《《" id="toLeft">
+								<input type="button" value="《《" id="toLeft" onclick="intoLeft()" >
 							</td>
 							<td>
 								<select id="associationSelect" name="customerIds" multiple="multiple" size="10"></select>
 							</td>
 						</tr>
 						<tr>
-							<td colspan="3"><a id="associationBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联客户</a> </td>
+							<td colspan="3"><a id="associationBtn" href="javascript:assignCustomers2FixedArea()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联客户</a> </td>
 						</tr>
 					</table>
 				</form>
 			</div>
 		</div>
+	<script type="text/javascript">
+		function intoRight() {
+			$("#associationSelect").append($("#noassociationSelect option:selected"))
+		}
+		
+		function intoLeft() {
+			$("#noassociationSelect").append($("#associationSelect option:selected"))
+		}
+		
+		function assignCustomers2FixedArea() {
+			var rows = $("#grid").datagrid("getSelections")
+			$("#customerFixedAreaId").val(rows[0].id)
+			$("#associationSelect option").prop("selected","selected")
+			$("#customerForm").submit()
+		}
+	</script>
 		
 		<!-- 关联快递员窗口 -->
 		<div class="easyui-window" title="关联快递员窗口" id="courierWindow" modal="true"
@@ -398,30 +483,42 @@
 							<td>
 								<!-- 存放定区编号 -->
 								<input type="hidden" name="id" id="courierFixedAreaId" />
-								<input data-options="ditable:false, url:'../../courierAction_listajax.action',valueField:'id',textField:'name'"
+								<input data-options="ditable:false, url:'../../courierAction_findAll.action',valueField:'id',textField:'name'"
 									 type="text" name="courierId" class="easyui-combobox" required="true" />
+									 
 							</td>
 						</tr>
 						<tr>
 							<td>选择收派时间</td>
 							<td>
-								<select required="true" class="easyui-combobox" name="takeTimeId">
+								<!-- <select id="takeTimeId" required="true" class="easyui-combobox" name="takeTimeId">
 									<option>请选择</option>
 									<option value="1">北京早班</option>
 									<option value="2">北京晚班</option>
-								</select>
+								</select> -->
 								<!-- <input type="text" name="takeTimeId" class="easyui-combobox" required="true" /> -->
+								<input data-options="ditable:false, url:'../../takeTimeAction_findAll.action',valueField:'id',textField:'name'"
+									 type="text" name="takeTimeId" class="easyui-combobox" required="true" />
+									 
 							</td>
 						</tr>
 						<tr>
 							<td colspan="3">
-								<a id="associationCourierBtn" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联快递员</a>
+								<a id="associationCourierBtn" href="javascript:saveData()" class="easyui-linkbutton" data-options="iconCls:'icon-save'">关联快递员</a>
 							 </td>
 						</tr>
 					</table>
 				</form>
+				<script type="text/javascript">
+					function saveData() {
+						var rows = $("#grid").datagrid("getSelections")
+						if($("#courierForm").form("validate")){
+							$("#courierFixedAreaId").val(rows[0].id)
+							$("#courierForm").submit()
+						}
+					}
+				</script>
 			</div>
 		</div>
 	</body>
-
 </html>
