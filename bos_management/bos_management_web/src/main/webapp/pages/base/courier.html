@@ -69,7 +69,7 @@
 				if (rows.length == 0) {
 					$.messager.alert("提示", "请选择需要删除的数据~!~", 'info')
 				} else {
-					$.messager.confirm("删除确认框", "确定删除?一去不复返哦!", function(r) {
+					$.messager.confirm("删除确认框", "确定删除!不再考虑一下?", function(r) {
 						if (r) {
 							var arr = new Array();
 							for (var i = 0; i < rows.length; i++) {
@@ -82,8 +82,22 @@
 			}
 			
 			function doRestore(){
-				alert("将取派员还原...");
+				var rows = $('#grid').datagrid("getSelections")
+				if (rows.length == 0) {
+					$.messager.alert("提示", "请选择需要恢复的数据~!~", 'info')
+				} else {
+					$.messager.confirm("恢复确认框", "确定恢复?", function(r) {
+						if (r) {
+							var arr = new Array();
+							for (var i = 0; i < rows.length; i++) {
+								arr.push(rows[i].id)
+							}
+							location.href = "../../courierAction_batchRec.action?ids="+arr.toString()
+						}
+					})
+				} 
 			}
+			
 			//工具栏
 			var toolbar = [ {
 				id : 'button-add',	

@@ -83,6 +83,18 @@ public class CourierAction extends CommonAction<Courier> {
         return NONE;
     }
     
+    @Action(value="courierAction_batchRec",results={
+            @Result(name="success",location="/pages/base/courier.html",type="redirect")
+    })
+    public String batchRec(){
+        if (StringUtils.isNotEmpty(ids)) {
+            String[] arr = ids.split(",");
+            courierService.updateRecById(arr);
+            return SUCCESS;
+        }
+        return NONE;
+    }
+    
    
     @Action("courierAction_pageQuery")
     public String pageQuery() throws IOException{

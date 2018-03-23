@@ -1,5 +1,6 @@
 package com.xun.bos.fore.web.action;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.core.MediaType;
@@ -23,6 +24,8 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.xun.crm.domain.Customer;
 import com.xun.utils.MailUtils;
 import com.xun.utils.SmsUtils;
+
+import net.sf.json.JSONObject;
 
 /**  
  * ClassName:CustomerAction <br/>  
@@ -72,6 +75,15 @@ public class CustomerAction extends ActionSupport implements ModelDriven<Custome
     public String regist(){
         String serverCode = (String) ServletActionContext.getRequest().getSession().getAttribute("serverCode");
         if (StringUtils.isNotEmpty(checkcode) && checkcode.equals(serverCode)) {
+            Customer customer = WebClient.create("http://localhost:8180/crm/webService/customerService/isActived")
+                    .type(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .query("telephone", model.getTelephone())
+                    .get(Customer.class);
+                    
+            if (customer != null) {
+                return NONE;
+            }
             WebClient.create("http://localhost:8180/crm/webService/customerService/save")
             .type(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
@@ -81,7 +93,7 @@ public class CustomerAction extends ActionSupport implements ModelDriven<Custome
             String activeCode = RandomStringUtils.randomNumeric(16);
             redisTemplate.opsForValue().set(telephone, activeCode,1,TimeUnit.DAYS);
             MailUtils.sendMail(email, "用户激活", "<a href='http://localhost:8280/portal/customerAction_active.action"
-                    + "?checkcode="+activeCode+"&telephone="+telephone+"'>"+"欢迎注册速运会员,点击激活</a>");
+                    + "?checkcode="+activeCode+"&telephone="+telephone+"'>"+"欢迎注册速运会员,请在24小时内点击激活</a>");
             return SUCCESS;
         }
         return ERROR;
@@ -129,12 +141,33 @@ public class CustomerAction extends ActionSupport implements ModelDriven<Custome
                     .query("telephone", model.getTelephone())
                     .query("password", model.getPassword())
                     .get(Customer.class);
-            if (customer != null && customer.getType() == 1) {
+            if (customer != null && customer.getType() != null && customer.getType() == 1) {
                 ServletActionContext.getRequest().getSession().setAttribute("user", customer);
                 return SUCCESS;
             }
         }
         return ERROR;
+    }
+    
+    @Action("customerAction_findByTelephone")
+    public String findByTelephone(){
+        
+        Customer customer = WebClient.create("http://localhost:8180/crm/webService/customerService/isActived")
+                .type(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .query("telephone", model.getTelephone())
+                .get(Customer.class);
+        try {
+            if (customer != null) {
+                
+                ServletActionContext.getResponse().getWriter().write("true");
+            }
+        } catch (IOException e) {
+              
+            e.printStackTrace();  
+            
+        }
+        return NONE;
     }
 }
   

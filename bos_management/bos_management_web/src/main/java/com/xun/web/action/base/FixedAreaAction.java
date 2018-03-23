@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
@@ -73,12 +74,14 @@ public class FixedAreaAction extends CommonAction<FixedArea> {
     
     @Action("fixedAreaAction_findAssociatedCustomers")
     public String findAssociatedCustomers() throws IOException{
-        List<Customer> list = (List<Customer>) WebClient.create("http://localhost:8180/crm/webService/customerService/findAssociatedCustomers")
-                .type(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .query("fixedAreaId", getModel().getId())
-                .getCollection(Customer.class);
-        listToJson(list, null);
+        if (getModel() != null && getModel().getId()!=null) {
+            List<Customer> list = (List<Customer>) WebClient.create("http://localhost:8180/crm/webService/customerService/findAssociatedCustomers")
+                    .type(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .query("fixedAreaId", getModel().getId())
+                    .getCollection(Customer.class);
+            listToJson(list, null);
+        }
         return NONE;
     }
     
@@ -98,12 +101,14 @@ public class FixedAreaAction extends CommonAction<FixedArea> {
         if (customerIds == null) {
             customerIds = new Long[]{0L};
         }
-        WebClient.create("http://localhost:8180/crm/webService/customerService/assignCustomers2FixedArea")
-                .type(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .query("fixedAreaId", getModel().getId())
-                .query("customerIds", customerIds)
-                .put(null);
+        if (getModel() != null && getModel().getId()!=null) {
+            WebClient.create("http://localhost:8180/crm/webService/customerService/assignCustomers2FixedArea")
+                    .type(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .query("fixedAreaId", getModel().getId())
+                    .query("customerIds", customerIds)
+                    .put(null);
+        }
         return SUCCESS;
     }
     

@@ -11,5 +11,7 @@ import com.xun.bos.domain.base.FixedArea;
  */
 public interface FixedAreaRepository extends JpaRepository<FixedArea, Long> {
 
+    FixedArea findById(long fixedAreaId);
+
 }
   

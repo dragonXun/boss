@@ -59,7 +59,7 @@ public class SubAreaAction extends CommonAction<SubArea> {
         Pageable pageable = new PageRequest(page-1, rows);
         Page<SubArea> page = subAreaService.findAll(pageable);
         JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes(new String[]{"fixedArea"});
+        jsonConfig.setExcludes(new String[]{"fixedArea","subareas"});
         pageToJson(page, jsonConfig);
         return NONE;
     }
@@ -67,7 +67,9 @@ public class SubAreaAction extends CommonAction<SubArea> {
     @Action("subAreaAction_findUnAssociatedFixedArea")
     public String findUnAssociatedFixedArea() throws IOException{
         List<SubArea> list = subAreaService.findUnAssociatedFixedArea();
-        listToJson(list, null);
+        JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setExcludes(new String[]{"subareas"});
+        listToJson(list, jsonConfig);
         return NONE;
     }
 
@@ -75,7 +77,7 @@ public class SubAreaAction extends CommonAction<SubArea> {
     public String findAssociatedFixedArea() throws IOException{
         List<SubArea> list = subAreaService.findAssociatedFixedArea(getModel().getId());
         JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.setExcludes(new String[]{"fixedArea","area"});
+        jsonConfig.setExcludes(new String[]{"couriers","subareas"});
         listToJson(list, jsonConfig);
         return NONE;
     }

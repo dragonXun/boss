@@ -50,6 +50,10 @@ public interface CustomerService {
     public Customer login(@QueryParam("telephone") String telephone,
             @QueryParam("password") String password);
     
+    @GET
+    @Path("/findFixedAreaId")
+    public String findFixedAreaId(@QueryParam("address") String address);
+    
     @PUT
     @Path("/active")
     public void active(@QueryParam("telephone") String telephone);

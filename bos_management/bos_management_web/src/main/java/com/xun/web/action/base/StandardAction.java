@@ -56,34 +56,15 @@ public class StandardAction extends CommonAction<Standard> {
     public String findAll() throws IOException{
         Page<Standard> page = standardService.findAll(null);
         List<Standard> list = page.getContent();
-        String json = JSONArray.fromObject(list).toString();
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(json);
+        listToJson(list, null);
         return NONE;
     }
     
-    private int page;
-    private int rows;
-    public void setPage(int page) {
-        this.page = page;
-    }
-    public void setRows(int rows) {
-        this.rows = rows;
-    }
     @Action("standardAction_pageQuery")
     public String pageQuery() throws IOException{
         Pageable pageable = new PageRequest(page-1, rows);
         Page<Standard> page = standardService.findAll(pageable);
-        List<Standard> list = page.getContent();
-        long total = page.getTotalElements();
-        Map<String, Object> map = new HashMap<>();
-        map.put("total", total);
-        map.put("rows", list);
-        String json = JSONObject.fromObject(map).toString();
-        HttpServletResponse response = ServletActionContext.getResponse();
-        response.setContentType("application/json;charset=UTF-8");
-        response.getWriter().write(json);
+        pageToJson(page, null);
         return NONE;
     }
 }

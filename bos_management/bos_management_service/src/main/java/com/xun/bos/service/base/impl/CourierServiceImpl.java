@@ -1,5 +1,6 @@
 package com.xun.bos.service.base.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,16 @@ public class CourierServiceImpl implements CourierService {
         for (String string : arr) {
             courierRepository.updateDelById(Long.parseLong(string));
         }
+    }
+    @Override
+    public void updateRecById(String[] arr) {
+        for (String id : arr) {
+            Courier courier = courierRepository.findOne(Long.parseLong(id));
+            if (courier != null) {
+                courier.setDeltag(null);
+            }
+        }
+        
     }
 
 }
