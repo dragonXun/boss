@@ -1,5 +1,9 @@
 package com.xun.bos.fore.web.action;
 
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.Session;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,7 +12,10 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -27,6 +34,7 @@ import com.xun.bos.domain.take_delivery.Order;
 @Scope("prototype")
 public class OrderAction extends ActionSupport implements ModelDriven<Order> {
     private Order model;
+   
     @Override
     public Order getModel() {
         if (model == null) {
@@ -77,14 +85,17 @@ public class OrderAction extends ActionSupport implements ModelDriven<Order> {
             model.setRecArea(area);
         }
         if (model != null) {
-            System.out.println(model);
             WebClient.create("http://localhost:8080/bos_management_web/webService/orderService/saveOrder")
             .accept(MediaType.APPLICATION_JSON)
             .type(MediaType.APPLICATION_JSON)
             .post(model);
+           
             return SUCCESS;
         }
         return ERROR;
     }
+    
+
+    
 }
   

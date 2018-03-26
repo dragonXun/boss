@@ -45,18 +45,47 @@
 					editIndex = undefined;
 				}
 			}
+			function doDelete(){
+				var rows = $("#grid").datagrid("getSelections")
+				if (rows.length==1) {
+					editIndex = $("#grid").datagrid("getRowIndex",rows[0])
+					$("#grid").datagrid('deleteRow', editIndex);
+					editIndex = undefined;
+				}else{
+					$.messager.alert("提示", "只能选择一条数据操作!", "info")
+				}
+			}
+			function doEdit(){
+				var rows = $("#grid").datagrid("getSelections")
+				if (rows.length==1 && editIndex==undefined) {
+					editIndex = $("#grid").datagrid("getRowIndex",rows[0])
+					$("#grid").datagrid('beginEdit', editIndex);
+				}else{
+					$.messager.alert("提示", "只能选择一条数据操作!", "info")
+				}
+			}
 			
 			//工具栏
 			var toolbar = [ {
 				id : 'button-add',	
 				text : '新增一行',
-				iconCls : 'icon-edit',
+				iconCls : 'icon-add',
 				handler : doAdd
 			}, {
 				id : 'button-cancel',
 				text : '取消编辑',
 				iconCls : 'icon-cancel',
 				handler : doCancel
+			}, {
+				id : 'button-remove',
+				text : '删除',
+				iconCls : 'icon-remove',
+				handler : doDelete
+			}, {
+				id : 'button-edit',
+				text : '修改',
+				iconCls : 'icon-edit',
+				handler : doEdit
 			}, {
 				id : 'button-save',
 				text : '保存',
@@ -70,13 +99,13 @@
 				width : 120,
 				align : 'center',
 				editor :{
-					type : 'validatebox',
+					type : 'numberbox',
 					options : {
 						required: true
 					}
 				}
 			}, {
-				field : 'arrivecity',
+				field : 'arriveCity',
 				title : '到达地',
 				width : 120,
 				align : 'center',
@@ -87,7 +116,7 @@
 					}
 				}
 			},{
-				field : 'product',
+				field : 'goodsType',
 				title : '产品',
 				width : 120,
 				align : 'center',
@@ -114,13 +143,13 @@
 				width : 120,
 				align : 'center',
 				editor :{
-					type : 'validatebox',
+					type : 'numberbox',
 					options : {
 						required: true
 					}
 				}
 			}, {
-				field : 'floadreqr',
+				field : 'remark',
 				title : '配载要求',
 				width : 220,
 				align : 'center',
@@ -144,13 +173,20 @@
 					rownumbers : true,
 					striped : true,
 					pageList: [30,50,100],
+					singleSelect: true,
 					pagination : true,
 					toolbar : toolbar,
-					url :  "",
+					url :  "../../wayBillAction_pageQuery.action",
 					idField : 'id',
 					columns : columns,
 					onDblClickRow : doDblClickRow,
 					onAfterEdit : function(rowIndex, rowData, changes){
+						$.post("../../wayBillAction_save.action",rowData,function(data){
+							if(data==1){
+								$("#grid").datagrid('deleteRow', 0);
+								alert("数据录入失败!")
+							} 
+						})
 						console.info(rowData);
 						editIndex = undefined;
 					}
@@ -158,7 +194,6 @@
 			});
 		
 			function doDblClickRow(rowIndex, rowData){
-				alert("双击表格数据...");
 				console.info(rowIndex);
 				$('#grid').datagrid('beginEdit',rowIndex);
 				editIndex = rowIndex;

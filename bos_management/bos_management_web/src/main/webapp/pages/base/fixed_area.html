@@ -188,7 +188,10 @@
 					url : "../../fixedAreaAction_pageQuery.action",
 					idField : 'id',
 					columns : columns,
-					onDblClickRow : doDblClickRow
+					onDblClickRow : function (index,row) {
+						
+						doDblClickRow(row)
+					}
 				});
 				
 				// 添加、修改定区
@@ -219,11 +222,10 @@
 			});
 			
 			
-			function doDblClickRow(){
-				var row = '2'
+			function doDblClickRow(row){
 				$('#association_subarea').datagrid( {
 					queryParams: {
-						id:row
+						id:row.id
 					},
 					fit : true,
 					border : true,
@@ -297,7 +299,7 @@
 				});
 				$('#association_customer').datagrid( {
 					queryParams: {
-						id:row
+						id:row.id
 					},
 					fit : true,
 					border : true,
