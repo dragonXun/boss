@@ -72,7 +72,14 @@
 	-->
 	<context:component-scan base-package="com.xun.bos.service,com.xun.bos.web" />
 	<!-- 开启事务注解 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager" />
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+		<property name="proxyTargetClass" value="true"></property>
+	</bean>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<property name="securityManager" ref="securityManager"></property>
+	</bean>
+	<!-- @RequiresPermissions("fixedAreaAction_pageQuery") -->
 	<!--
 		#########################################################
 		指定Spring Data JPA要进行扫描的包,该包中的类框架会自动为其创建代理
@@ -93,4 +100,27 @@
 		</jaxrs:outInterceptors>
 	</jaxrs:server>
 
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="userRealm"></property>
+	</bean>
+	<bean id="shiroFilterFactoryBean" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"></property>
+		<property name="loginUrl" value="/login.html"></property>
+		<property name="successUrl" value="/home.html"></property>
+		<property name="unauthorizedUrl" value="/unauthorizedUrl.html"></property>
+		<property name="filterChainDefinitions">
+			<value>
+				/css/* = anon
+				/data/* = anon
+				/images/* = anon
+				/js/** = anon
+				/userAction_login.action = anon
+				/validatecode.jsp* = anon
+				/shiro.jsp = anon
+				/courierAction_pageQuery.action = perms["courierAction_pageQuer"]
+				/hello.html = perms["courier_pageQuery"]
+				/** = authc
+			</value>
+		</property>
+	</bean>
 </beans>

@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Namespace;
 import org.apache.struts2.convention.annotation.ParentPackage;
@@ -51,7 +52,7 @@ public class FixedAreaAction extends CommonAction<FixedArea> {
         fixedAreaService.save(getModel());
         return SUCCESS;
     }
- 
+    
     @Action("fixedAreaAction_pageQuery")
     public String pageQuery() throws IOException{
         Pageable pageable = new PageRequest(page-1, rows);

@@ -1,4 +1,4 @@
-package com.xun.bos.service.take_delivery;
+package com.xun.bos.service.take_deliverys.impl;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -31,7 +31,7 @@ import com.xun.bos.domain.base.FixedArea;
 import com.xun.bos.domain.base.SubArea;
 import com.xun.bos.domain.take_delivery.Order;
 import com.xun.bos.domain.take_delivery.WorkBill;
-import com.xun.bos.service.take_delivery.OrderService;
+import com.xun.bos.service.take_deliverys.OrderService;
 import com.xun.crm.domain.Customer;
 
 /**  

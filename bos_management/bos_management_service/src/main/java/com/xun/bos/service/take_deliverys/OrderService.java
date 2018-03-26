@@ -1,4 +1,4 @@
-package com.xun.bos.service.take_delivery;
+package com.xun.bos.service.take_deliverys;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;

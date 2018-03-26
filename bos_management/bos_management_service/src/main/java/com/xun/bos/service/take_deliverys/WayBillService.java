@@ -1,4 +1,4 @@
-package com.xun.bos.service.take_delivery;
+package com.xun.bos.service.take_deliverys;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

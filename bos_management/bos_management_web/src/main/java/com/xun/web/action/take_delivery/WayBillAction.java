@@ -15,7 +15,7 @@ import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ModelDriven;
 import com.xun.bos.domain.take_delivery.WayBill;
-import com.xun.bos.service.take_delivery.WayBillService;
+import com.xun.bos.service.take_deliverys.WayBillService;
 import com.xun.web.action.CommonAction;
 
 /**  
