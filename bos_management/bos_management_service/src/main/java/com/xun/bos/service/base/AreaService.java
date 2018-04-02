@@ -23,5 +23,7 @@ public interface AreaService {
 
     List<Area> findByQ(String q);
 
+    List<Object[]> exportChart();
+
 }
   

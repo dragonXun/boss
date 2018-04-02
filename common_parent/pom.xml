@@ -147,8 +147,8 @@
 		<!-- oracle数据库驱动，需要手动安装 -->
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.2.0</version>
+  			<artifactId>ojdbc14</artifactId>
+  			<version>10.2.0.2.0</version>
 		</dependency>
 
 		<!-- Excel解析工具类 -->
@@ -292,9 +292,9 @@
 			<version>2.1.7</version>
 		</dependency>
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itext-asian</artifactId>
-			<version>5.2.0</version>
+			<groupId>com.xun</groupId>
+  			<artifactId>itextAsian</artifactId>
+  			<version>1.0.0</version>
 		</dependency>
 
 		<!-- groovy -->

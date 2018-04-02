@@ -100,8 +100,13 @@
 		</jaxrs:outInterceptors>
 	</jaxrs:server>
 
+	<!-- shiro权限管理 -->
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
+	</bean>
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="userRealm"></property>
+		<property name="cacheManager" ref="cacheManager"></property>
 	</bean>
 	<bean id="shiroFilterFactoryBean" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
 		<property name="securityManager" ref="securityManager"></property>
@@ -117,10 +122,30 @@
 				/userAction_login.action = anon
 				/validatecode.jsp* = anon
 				/shiro.jsp = anon
-				/courierAction_pageQuery.action = perms["courierAction_pageQuer"]
+				/courierAction_pageQuery.action = perms["waybill"]
 				/hello.html = perms["courier_pageQuery"]
 				/** = authc
 			</value>
+		</property>
+	</bean>
+	
+	<!-- Quartz定时 -->
+	<!-- 自定义任务对象 -->
+	<!-- <bean id="workBillJob" class="com.xun.bos.service.jobs.WorkBillJob"></bean> -->
+	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="workBillJob"></property>
+		<!-- 指定要调用的方法 -->
+		<property name="targetMethod" value="sendMail"></property>
+	</bean>
+	<bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetail"></property>
+		<property name="cronExpression" value="* * 22 * * ?"></property>
+	</bean>
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<array>
+				<ref bean="trigger"/>
+			</array>
 		</property>
 	</bean>
 </beans>

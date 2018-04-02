@@ -1,5 +1,6 @@
 package com.xun.bos.domain.system;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +19,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "T_USER")
-public class User {
+public class User implements Serializable{
 
     @Id
     @GeneratedValue
@@ -40,6 +41,16 @@ public class User {
     private String username; // 登陆用户名
     @Column(name = "C_NICKNAME")
     private String nickname; // 真实姓名
+    @Column(name = "C_SALARY")
+    private Double salary; // 工资
+
+    public Double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(Double salary) {
+        this.salary = salary;
+    }
 
     @ManyToMany
     @JoinTable(name = "T_USER_ROLE",

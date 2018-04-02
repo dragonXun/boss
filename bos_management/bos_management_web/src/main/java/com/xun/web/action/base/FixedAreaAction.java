@@ -52,7 +52,7 @@ public class FixedAreaAction extends CommonAction<FixedArea> {
         fixedAreaService.save(getModel());
         return SUCCESS;
     }
-    
+    //@RequiresPermissions("fixedArea")
     @Action("fixedAreaAction_pageQuery")
     public String pageQuery() throws IOException{
         Pageable pageable = new PageRequest(page-1, rows);

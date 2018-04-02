@@ -48,5 +48,11 @@ public class AreaServiceImpl implements AreaService {
         return areaRepository.findFromQ("%"+q.toUpperCase()+"%");
     }
 
+    @Override
+    public List<Object[]> exportChart() {
+          
+        return areaRepository.exportChart();
+    }
+
 }
   
